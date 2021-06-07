@@ -25,7 +25,7 @@ class Directory {
 
 class CustomFile {
   name = "";
-  path = "";
+  path;
   constructor(name, path) {
     this.name = name;
     this.path = path;
@@ -69,8 +69,8 @@ const _data = {
     },
   ],
   files: [
-    { name: "about.me", path: "files/aboutme.txt" },
-    { name: "contact.me", path: "files/contact.txt" },
+    { name: "aboutme.txt", path: "files/aboutme.txt" },
+    { name: "contact.me", path: contactMe },
   ],
 };
 

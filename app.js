@@ -19,12 +19,15 @@ const getConsole = () => {
     line_text: "",
     listed_commands: [],
     keyboard: {
-      state: true,
+      state: false,
       shifted: false,
       alternated: false,
     },
   };
   domElement.addEventListener("keydown", (e) => {
+    if (e.code == "Space") {
+      e.preventDefault();
+    }
     getKey(e.key);
   });
   domElement.focus();
@@ -91,7 +94,6 @@ const eraseLastChar = () => {
     _console.last_line.innerHTML =
       (_console.print_header ? _console.line_header : "") + _console.line_text;
   }
-  _console.last_line.scrollIntoView();
 };
 
 const executeCommand = async () => {
@@ -140,7 +142,7 @@ const executeCommand = async () => {
         accesFolder("..");
         break;
       case "run":
-        runProgram();
+        runProgram(commands[1]);
         break;
       case "kill":
         killProgram();
@@ -180,7 +182,7 @@ const newLine = () => {
       children[children.length - 2].innerHTML = textOfPrevLine.slice(0, -1);
     }
   }
-  _console.last_line.scrollIntoView();
+  if (_console.active) _console.last_line.scrollIntoView(false);
 };
 
 const writeSentence = async (str, withNewLine = true, fast = 10) => {
@@ -375,12 +377,34 @@ const listeners = [
   },
 ];
 
-const runProgram = () => {
-  const rightPanel = document.getElementById("right-main-container");
-  if (!rightPanel.classList.contains("active")) {
-    rightPanel.classList.add("active");
+const runProgram = (func) => {
+  if (!func) {
+    writeMultipleSentences(
+      ["\n" + `You must pass the name of the file you want to run`],
+      0
+    );
+    return;
   }
-  newLine();
+  const file = _console.actual_dir.files.find((x) => x.name == `${func}`);
+  if (file) {
+    if (typeof file.path === "string") {
+      writeMultipleSentences(
+        [
+          "\n" +
+            `File '${file.name}' is a text file, you can can open it with 'open'`,
+        ],
+        0
+      );
+    } else if (typeof file.path === "function") {
+      file.path();
+    }
+    newLine();
+  } else {
+    writeMultipleSentences(
+      ["\n" + `Can't find '${func}' in this directory`],
+      0
+    );
+  }
 };
 
 const killProgram = () => {
@@ -394,14 +418,29 @@ const killProgram = () => {
 const openFile = (command) => {
   if (command) {
     const file = _console.actual_dir.files.find((x) => x.name == `${command}`);
-    console.log(command);
     if (file) {
-      printInConsole(file.path);
+      if (typeof file.path === "string") {
+        printInConsole(file.path);
+      } else if (typeof file.path === "function") {
+        writeMultipleSentences(
+          [
+            "\n" +
+              `File '${command}' is a program, you can can execute it with 'run'`,
+          ],
+          0
+        );
+      }
     } else {
-      writeMultipleSentences(["\n" + `File '${command}' not found..`], 0);
+      writeMultipleSentences(
+        ["\n" + `Can't find '${command}' in this directory`],
+        0
+      );
     }
   } else {
-    newLine();
+    writeMultipleSentences(
+      ["\n" + `You must pass the name of the file you want to open`],
+      0
+    );
   }
 };
 
@@ -423,7 +462,7 @@ const toogleHeader = () => {
   _console.print_header = !_console.print_header;
 };
 
-const exitConsole = () => {
+const exitConsole = async () => {
   const console_dom = document.getElementById("console");
   const background = document.getElementById("console-background");
   const filter = document.getElementById("console-filter");
@@ -434,19 +473,22 @@ const exitConsole = () => {
   _console.blinking = false;
   _console.active = false;
   newLine();
+  await sleep(1000);
+  consoleCage(false);
 };
 
 const turnConsoleOn = async () => {
-  if (_console.width > 600) {
+  if (_console.width < 600 && !_console.keyboard.state) {
     keyboard_toogleState();
   }
+  updateKeyboard();
   if (_console.print_header) toogleHeader();
   toogleConsoleState(false);
   const date = new Date();
   const datetime = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  console.log(datetime);
+  _console.DOM_Element.innerHTML = "";
   await writeMultipleSentences(
-    ["Welcome to CreaLito terminal (v1.0.2)", datetime, "\n"],
+    [" ", "Welcome to CreaLito terminal (v1.0.2)", datetime, "\n"],
     0,
     0
   );
@@ -462,7 +504,31 @@ const turnConsoleOn = async () => {
   toogleHeader();
   newLine();
   toogleConsoleState(true);
+  blinking();
   wellcomeLines();
+};
+
+const consoleCage = async (state) => {
+  const cover = document.getElementById("cover");
+  if (state) {
+    if (_console.width < 600 && !_console.keyboard.state) {
+      keyboard_toogleState();
+    }
+    cover.classList.add("shrink");
+    const console_dom = document.getElementById("console");
+    const background = document.getElementById("console-background");
+    const filter = document.getElementById("console-filter");
+    await sleep(500);
+    filter.classList.remove("console-filter-off");
+    background.classList.remove("console-bg-off");
+    console_dom.classList.remove("console-p-off");
+    _console.blinking = true;
+    _console.active = true;
+    _console.DOM_Element.focus();
+    turnConsoleOn();
+  } else {
+    cover.classList.remove("shrink");
+  }
 };
 
 //#region KEYBOARD
@@ -521,5 +587,4 @@ const updateKeyboard = () => {
 //#endregion
 
 getConsole();
-blinking();
-turnConsoleOn();
+exitConsole();

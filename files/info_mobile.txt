@@ -6,4 +6,10 @@
 
 <strong>cd:</strong> access a specified directory
 
+<strong>open:</strong> prints 'txt' files in the console
+
+<strong>run:</strong> excecute a program
+
+<strong>kill:</strong> kill any program that is running
+
 <strong>exit:</strong> turn off the console

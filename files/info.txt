@@ -3,5 +3,8 @@
 ║ clear      | clears the console buffer           ║
 ║ dir        | show this directory content         ║
 ║ cd         | access a specified directory        ║
+║ open       | prints 'txt' files in the console   ║
+║ run        | excecute a program                  ║
+║ kill       | kill any program that is running    ║
 ║ exit       | turn off the console                ║
 ╚══════════════════════════════════════════════════╝

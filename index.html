@@ -19,11 +19,22 @@
           <div id="console-background"></div>
 
           <div id="console-container">
-            <div tabindex="0" id="console" class="listening"><p></p></div>
+            <div tabindex="0" id="console" class="listening">
+              <!-- <p></p> -->
+            </div>
           </div>
-          <div id="console-filter" class="lines-filter"></div>
+          <div id="console-filter" class="console-filter lines-filter"></div>
+          <div id="cover-filter" class="console-filter">
+            <div id="cover">
+              <div class="button-contaier">
+                <div class="button-content" onclick="consoleCage(true)">
+                  <div id="led"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div id="virtual-keyboard-container">
+        <div id="virtual-keyboard-container" class="hide">
           <div id="virtual-keyboard-normal" class="keyboard">
             <div class="row">
               <div class="kb-item" onclick="getKey('q')">q</div>
@@ -204,7 +215,7 @@
       </div>
       <div id="right-main-container"></div>
     </div>
-
+    <script src="runnables.js"></script>
     <script src="dir.js"></script>
     <script src="app.js"></script>
   </body>

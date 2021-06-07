@@ -1,0 +1,7 @@
+╔══════════════════════════════════════════════════╗
+║ info       | bring info about frecuent commands  ║
+║ clear      | clears the console buffer           ║
+║ dir        | show this directory content         ║
+║ cd         | access a specified directory        ║
+║ exit       | turn off the console                ║
+╚══════════════════════════════════════════════════╝

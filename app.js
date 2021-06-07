@@ -1,19 +1,28 @@
 let _console;
+const cursor = "_";
 
 const getConsole = () => {
   const domElement = document.getElementById("console");
   _console = {
+    width: window.visualViewport.width,
     DOM_Element: domElement,
     active: true,
+    listening: true,
     last_line: domElement.lastElementChild,
     blinking: true,
     actual_dir: data,
     tree: [0],
     folders_tree: [],
+    print_header: true,
     line_header:
-      "<strong class='console-header'>root@console<span class='console-normal'>:</span><span class='console-directory'>~</span><span class='console-normal'>$</span></strong>",
-    line_text: " ",
+      "<strong class='console-header'>root@console<span class='console-normal'>:</span><span class='console-directory'>~</span><span class='console-normal'>$</span></strong> ",
+    line_text: "",
     listed_commands: [],
+    keyboard: {
+      state: true,
+      shifted: false,
+      alternated: false,
+    },
   };
   domElement.addEventListener("keydown", (e) => {
     getKey(e.key);
@@ -21,14 +30,13 @@ const getConsole = () => {
   domElement.focus();
 };
 
-const toogleConsoleState = () => {
-  if (_console.active) {
-    cons.classList.remove("listening");
-    active = true;
+const toogleConsoleState = (state) => {
+  if (!state) {
+    _console.DOM_Element.classList.remove("listening");
   } else {
-    _console.domElement.classList.add("listening");
-    active = true;
+    _console.DOM_Element.classList.add("listening");
   }
+  _console.active = state;
 };
 
 const blinking = async () => {
@@ -36,21 +44,22 @@ const blinking = async () => {
 
   const lineText = _console.last_line.innerHTML;
   if (_console.blinking) {
-    if (lineText[lineText.length - 1] === "█") {
+    if (lineText[lineText.length - 1] === cursor) {
       _console.last_line.innerHTML = lineText.slice(0, -1);
     } else {
-      _console.last_line.innerHTML = lineText + "█";
+      _console.last_line.innerHTML = lineText + cursor;
     }
     await new Promise((res) => setTimeout(res, 1000));
     blinking();
   } else {
-    if (lineText[lineText.length - 1] !== "█") {
-      _console.last_line.innerHTML = lineText + "█";
+    if (lineText[lineText.length - 1] !== cursor) {
+      _console.last_line.innerHTML = lineText + cursor;
     }
   }
 };
 
 const getKey = (key) => {
+  if (!_console.active) return;
   if (key.length == 1) {
     writeChar(key);
   } else {
@@ -66,24 +75,29 @@ const getKey = (key) => {
 };
 
 const writeChar = (key) => {
+  const wh = _console.print_header;
   _console.blinking = false;
   _console.line_text += key;
   // const text = _console.last_line.innerText;
-  _console.last_line.innerHTML = _console.line_header + _console.line_text;
+  _console.last_line.innerHTML =
+    (wh ? _console.line_header : "") + _console.line_text;
   _console.blinking = true;
 };
 
 const eraseLastChar = () => {
+  if (!_console.active) return;
   if (_console.line_text !== " ") {
     _console.line_text = _console.line_text.slice(0, -1);
-    _console.last_line.innerHTML = _console.line_header + _console.line_text;
+    _console.last_line.innerHTML =
+      (_console.print_header ? _console.line_header : "") + _console.line_text;
   }
   _console.last_line.scrollIntoView();
 };
 
 const executeCommand = async () => {
+  if (!_console.active) return;
   _console.listed_commands.push(_console.line_text);
-  const commands = _console.line_text.slice(1).split(" ");
+  const commands = _console.line_text.split(" ");
   const lst = listeners.find((x) => x.state == true);
   if (lst) {
     switch (commands[0]) {
@@ -122,11 +136,20 @@ const executeCommand = async () => {
       case "cd":
         accesFolder(commands[1]);
         break;
+      case "cd..":
+        accesFolder("..");
+        break;
       case "run":
         runProgram();
         break;
-      case "close":
-        closeProgram();
+      case "kill":
+        killProgram();
+        break;
+      case "open":
+        openFile(commands[1]);
+        break;
+      case "exit":
+        exitConsole();
         break;
       case "":
         newLine();
@@ -140,18 +163,20 @@ const executeCommand = async () => {
 };
 
 const newLine = () => {
-  _console.line_text = " ";
+  _console.line_text = "";
 
   const p = document.createElement("p");
   p.className = "active-line";
-  p.innerHTML = `${_console.line_header}${_console.line_text}█`;
+  p.innerHTML = `${_console.print_header ? _console.line_header : ""}${
+    _console.line_text + cursor
+  }`;
   _console.DOM_Element.appendChild(p);
   _console.last_line = _console.DOM_Element.lastElementChild;
 
   const children = _console.DOM_Element.children;
   if (children.length >= 2) {
     const textOfPrevLine = children[children.length - 2].innerHTML;
-    if (textOfPrevLine[textOfPrevLine.length - 1] === "█") {
+    if (textOfPrevLine[textOfPrevLine.length - 1] === cursor) {
       children[children.length - 2].innerHTML = textOfPrevLine.slice(0, -1);
     }
   }
@@ -167,12 +192,13 @@ const writeSentence = async (str, withNewLine = true, fast = 10) => {
   if (withNewLine) newLine();
 };
 
-const writeMultipleSentences = async (arr, fast = 10) => {
+const writeMultipleSentences = async (arr, typeVelocity = 10, pTime = 500) => {
   for (let i = 0; i < arr.length; i++) {
     const str = arr[i];
-    await writeSentence(str, true, fast);
-    await sleep(500);
+    await writeSentence(str, true, typeVelocity);
+    await sleep(pTime);
   }
+  return;
 };
 
 function sleep(ms) {
@@ -216,23 +242,15 @@ const dontShowHomeInfo = () => {
 };
 
 const showInfo = () => {
-  writeMultipleSentences(
-    [
-      "\n" +
-        "╔══════════════════════════════════════════════════╗\n" +
-        "║ info       | bring info about frecuent commands  ║\n" +
-        "║ clear      | clears the console buffer           ║\n" +
-        "║ dir        | show this directory content         ║\n" +
-        "║ cd         | access a specified directory        ║\n" +
-        "║ exit       | turn off the console                ║\n" +
-        "╚══════════════════════════════════════════════════╝ ",
-    ],
-    0
-  );
+  if (_console.width < 600) {
+    printInConsole("files/info_mobile.txt");
+  } else {
+    printInConsole("files/info.txt");
+  }
 };
 
 const wrongCommand = (command) => {
-  writeMultipleSentences(["\n\n" + `Command '${command}' not found..\n `], 0);
+  writeMultipleSentences(["\n" + `Command '${command}' not found..`], 0);
 };
 
 const notAcceptValue = (command, expected) => {
@@ -258,8 +276,7 @@ const showDir = () => {
     const wsp = span(" ", 20 - l);
     dirContent += `${f}${wsp}DIR\n`;
   }
-
-  writeMultipleSentences(["\n" + dirContent + " "], 0);
+  writeMultipleSentences(["\n" + dirContent], 0);
 };
 
 const span = (char, times) => {
@@ -280,7 +297,7 @@ const accesFolder = (command) => {
         changeFolders(newFol[0], newFol[1]);
       } else {
         writeMultipleSentences(
-          ["\n\n" + `Directory '${command}' not found..\n `],
+          ["\n" + `Directory '${command}' not found..`],
           0
         );
       }
@@ -314,7 +331,7 @@ const changeFolders = (dir, index) => {
   for (let i = 0; i < _console.folders_tree.length; i++) {
     header += "/" + _console.folders_tree[i];
   }
-  _console.line_header = `<strong class="console-header">root@console<span class='console-normal'>:</span><span class="console-directory">~${header}</span><span class='console-normal'>$</span></strong>`;
+  _console.line_header = `<strong class="console-header">root@console<span class='console-normal'>:</span><span class="console-directory">~${header}</span><span class='console-normal'>$</span></strong> `;
   newLine();
 };
 
@@ -366,7 +383,7 @@ const runProgram = () => {
   newLine();
 };
 
-const closeProgram = () => {
+const killProgram = () => {
   const rightPanel = document.getElementById("right-main-container");
   if (rightPanel.classList.contains("active")) {
     rightPanel.classList.remove("active");
@@ -374,7 +391,135 @@ const closeProgram = () => {
   newLine();
 };
 
+const openFile = (command) => {
+  if (command) {
+    const file = _console.actual_dir.files.find((x) => x.name == `${command}`);
+    console.log(command);
+    if (file) {
+      printInConsole(file.path);
+    } else {
+      writeMultipleSentences(["\n" + `File '${command}' not found..`], 0);
+    }
+  } else {
+    newLine();
+  }
+};
+
+const printInConsole = async (file, typeVelocity = 0, pVelocity = 0) => {
+  let response = await fetch(file);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  } else {
+    lines = await await response.text();
+    const wr = await writeMultipleSentences(
+      ["\n" + lines],
+      typeVelocity,
+      pVelocity
+    );
+  }
+};
+
+const toogleHeader = () => {
+  _console.print_header = !_console.print_header;
+};
+
+const exitConsole = () => {
+  const console_dom = document.getElementById("console");
+  const background = document.getElementById("console-background");
+  const filter = document.getElementById("console-filter");
+
+  console_dom.classList.add("console-p-off");
+  background.classList.add("console-bg-off");
+  filter.classList.add("console-filter-off");
+  _console.blinking = false;
+  _console.active = false;
+  newLine();
+};
+
+const turnConsoleOn = async () => {
+  if (_console.width > 600) {
+    keyboard_toogleState();
+  }
+  if (_console.print_header) toogleHeader();
+  toogleConsoleState(false);
+  const date = new Date();
+  const datetime = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+  console.log(datetime);
+  await writeMultipleSentences(
+    ["Welcome to CreaLito terminal (v1.0.2)", datetime, "\n"],
+    0,
+    0
+  );
+
+  await writeSentence("Conectting with server.. ", false, 10);
+  await sleep(1000);
+  await writeSentence("OK ", true, 10);
+  await writeSentence("Loading assets.. ", false, 10);
+  await sleep(1000);
+  await writeSentence("OK", true, 10);
+
+  await sleep(500);
+  toogleHeader();
+  newLine();
+  toogleConsoleState(true);
+  wellcomeLines();
+};
+
+//#region KEYBOARD
+const keyboard_shift = () => {
+  _console.keyboard.shifted = !_console.keyboard.shifted;
+  updateKeyboard();
+};
+const keyboard_alter = () => {
+  _console.keyboard.alternated = !_console.keyboard.alternated;
+  _console.keyboard.shifted = false;
+  updateKeyboard();
+};
+const keyboard_toogleState = () => {
+  _console.keyboard.state = !_console.keyboard.state;
+  _console.keyboard.shifted = false;
+  _console.keyboard.alternated = false;
+  updateKeyboard();
+};
+const updateKeyboard = () => {
+  const keyboard = document.getElementById("virtual-keyboard-container");
+  const kb_normal = document.getElementById("virtual-keyboard-normal");
+  const kb_uppercase = document.getElementById("virtual-keyboard-uppercase");
+  const kb_nums = document.getElementById("virtual-keyboard-nums");
+  const kb_alter = document.getElementById("virtual-keyboard-alter");
+
+  if (_console.keyboard.state) {
+    if (keyboard.classList.contains("hide")) {
+      keyboard.classList.remove("hide");
+    }
+  } else {
+    if (!keyboard.classList.contains("hide")) {
+      keyboard.classList.add("hide");
+    }
+  }
+
+  if (!kb_normal.classList.contains("hide")) kb_normal.classList.add("hide");
+  if (!kb_uppercase.classList.contains("hide"))
+    kb_uppercase.classList.add("hide");
+  if (!kb_nums.classList.contains("hide")) kb_nums.classList.add("hide");
+  if (!kb_alter.classList.contains("hide")) kb_alter.classList.add("hide");
+
+  if (_console.keyboard.shifted) {
+    if (_console.keyboard.alternated) {
+      kb_alter.classList.remove("hide");
+    } else {
+      kb_uppercase.classList.remove("hide");
+    }
+  } else {
+    if (_console.keyboard.alternated) {
+      kb_nums.classList.remove("hide");
+    } else {
+      kb_normal.classList.remove("hide");
+    }
+  }
+};
+//#endregion
+
 getConsole();
-newLine();
 blinking();
-wellcomeLines();
+turnConsoleOn();

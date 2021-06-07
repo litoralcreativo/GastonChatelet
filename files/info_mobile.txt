@@ -1,0 +1,9 @@
+<strong>info:</strong> bring info about frecuent commands
+
+<strong>clear:</strong> clears the console buffer
+
+<strong>dir:</strong> show this directory content
+
+<strong>cd:</strong> access a specified directory
+
+<strong>exit:</strong> turn off the console

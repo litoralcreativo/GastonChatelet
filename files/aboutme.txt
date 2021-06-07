@@ -1,0 +1,11 @@
+<strong>Gaston Chatelet:</strong>
+Prestador de servicios informáticos especializado en el desarrollo de sistemas computacionales y programación de software con más de 3 años de experiencia diseñando, implementando y mantenimento sistemas digitales. 
+
+Priorizo sobre otras cosas el constante perfeccionamiento de las herramientas que utilizo, por lo que me considero un autodidacta con pasión por la innovación y el desarrollo de nuevas tecnologías. Mi habilidades organizacionales, atención al detalle, espíritu de equipo y habilidad de manejar múltiples proyectos en paralelo me han permitido prosperar en entornos de trabajo dinámicos y complejos. 
+
+Mi especialidad es la programación web y en particular el desarrollo front-end. Asimismo, he realizado trabajos que precisaron del desarrollo de aplicaciones móviles y/o de software para ordenadores, por lo que tengo manejo de múltiples tecnologías y lenguajes de programación: 
+	-Programación web: HTML5, CSS3, JavaScript, ES6, React, Node, etc
+	-Programación orientada a objetos: C#, C++, Java, , Python, .NET, php, etc.
+	-Sistema de manejo de bases de datos: MySQL, SQL Server, MongoDB
+	
+A lo largo de la formación de grado fui especializándome en aquellas disciplinas cuyo principal enfoque era la informática y las prácticas multimediales. Tras haber egresado funde Litoral Creativo, un emprendimiento que tiene como objetivo el trabajo de la programación y el desarrollo tecnológico a nivel regional, como su nombre lo sugiere. Desde su creación he trabajado con clientes en distintas áreas, como la música, la astronomía, los sistemas de procesamiento de datos y la biomecánica.

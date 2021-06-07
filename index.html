@@ -4,16 +4,203 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
     <title>Gaston Chatelet</title>
   </head>
   <body>
     <div class="container">
-      <div id="main-console-container">
-        <div id="console-container">
-          <div tabindex="0" id="console" class="listening"></div>
+      <div id="left-main-container">
+        <div id="main-console-container">
+          <div id="console-background"></div>
+
+          <div id="console-container">
+            <div tabindex="0" id="console" class="listening"><p></p></div>
+          </div>
+          <div id="console-filter" class="lines-filter"></div>
         </div>
-        <div id="console-filter"></div>
+        <div id="virtual-keyboard-container">
+          <div id="virtual-keyboard-normal" class="keyboard">
+            <div class="row">
+              <div class="kb-item" onclick="getKey('q')">q</div>
+              <div class="kb-item" onclick="getKey('w')">w</div>
+              <div class="kb-item" onclick="getKey('e')">e</div>
+              <div class="kb-item" onclick="getKey('r')">r</div>
+              <div class="kb-item" onclick="getKey('t')">t</div>
+              <div class="kb-item" onclick="getKey('y')">y</div>
+              <div class="kb-item" onclick="getKey('u')">u</div>
+              <div class="kb-item" onclick="getKey('i')">i</div>
+              <div class="kb-item" onclick="getKey('o')">o</div>
+              <div class="kb-item" onclick="getKey('p')">p</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="getKey('a')">a</div>
+              <div class="kb-item" onclick="getKey('s')">s</div>
+              <div class="kb-item" onclick="getKey('d')">d</div>
+              <div class="kb-item" onclick="getKey('f')">f</div>
+              <div class="kb-item" onclick="getKey('g')">g</div>
+              <div class="kb-item" onclick="getKey('h')">h</div>
+              <div class="kb-item" onclick="getKey('j')">j</div>
+              <div class="kb-item" onclick="getKey('k')">k</div>
+              <div class="kb-item" onclick="getKey('l')">l</div>
+              <div class="kb-item" onclick="getKey('ñ')">ñ</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_shift()">⇧</div>
+              <div class="kb-item" onclick="getKey('z')">z</div>
+              <div class="kb-item" onclick="getKey('x')">x</div>
+              <div class="kb-item" onclick="getKey('c')">c</div>
+              <div class="kb-item" onclick="getKey('v')">v</div>
+              <div class="kb-item" onclick="getKey('b')">b</div>
+              <div class="kb-item" onclick="getKey('n')">n</div>
+              <div class="kb-item" onclick="getKey('m')">m</div>
+              <div class="kb-item" onclick="getKey('Backspace')">⌫</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_alter()">?123</div>
+              <div class="kb-item" onclick="getKey(',')">,</div>
+              <div class="kb-item" id="space-item" onclick="getKey(' ')"></div>
+              <div class="kb-item" onclick="getKey('.')">.</div>
+              <div class="kb-item" onclick="getKey('Enter')">↵</div>
+            </div>
+          </div>
+          <div id="virtual-keyboard-uppercase" class="keyboard hide">
+            <div class="row">
+              <div class="kb-item" onclick="getKey('Q')">Q</div>
+              <div class="kb-item" onclick="getKey('W')">W</div>
+              <div class="kb-item" onclick="getKey('E')">E</div>
+              <div class="kb-item" onclick="getKey('R')">R</div>
+              <div class="kb-item" onclick="getKey('T')">T</div>
+              <div class="kb-item" onclick="getKey('Y')">Y</div>
+              <div class="kb-item" onclick="getKey('U')">U</div>
+              <div class="kb-item" onclick="getKey('I')">I</div>
+              <div class="kb-item" onclick="getKey('O')">O</div>
+              <div class="kb-item" onclick="getKey('P')">P</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="getKey('A')">A</div>
+              <div class="kb-item" onclick="getKey('S')">S</div>
+              <div class="kb-item" onclick="getKey('D')">D</div>
+              <div class="kb-item" onclick="getKey('F')">F</div>
+              <div class="kb-item" onclick="getKey('G')">G</div>
+              <div class="kb-item" onclick="getKey('H')">H</div>
+              <div class="kb-item" onclick="getKey('J')">J</div>
+              <div class="kb-item" onclick="getKey('K')">K</div>
+              <div class="kb-item" onclick="getKey('L')">L</div>
+              <div class="kb-item" onclick="getKey('Ñ')">Ñ</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_shift()">⇧</div>
+              <div class="kb-item" onclick="getKey('Z')">Z</div>
+              <div class="kb-item" onclick="getKey('X')">X</div>
+              <div class="kb-item" onclick="getKey('C')">C</div>
+              <div class="kb-item" onclick="getKey('V')">V</div>
+              <div class="kb-item" onclick="getKey('B')">B</div>
+              <div class="kb-item" onclick="getKey('N')">N</div>
+              <div class="kb-item" onclick="getKey('M')">M</div>
+              <div class="kb-item" onclick="getKey('Backspace')">⌫</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_alter()">?123</div>
+              <div class="kb-item" onclick="getKey(',')">,</div>
+              <div class="kb-item" id="space-item" onclick="getKey(' ')"></div>
+              <div class="kb-item" onclick="getKey('.')">.</div>
+              <div class="kb-item" onclick="getKey('Enter')">↵</div>
+            </div>
+          </div>
+          <div id="virtual-keyboard-nums" class="keyboard hide">
+            <div class="row">
+              <div class="kb-item" onclick="getKey('1')">1</div>
+              <div class="kb-item" onclick="getKey('2')">2</div>
+              <div class="kb-item" onclick="getKey('3')">3</div>
+              <div class="kb-item" onclick="getKey('4')">4</div>
+              <div class="kb-item" onclick="getKey('5')">5</div>
+              <div class="kb-item" onclick="getKey('6')">6</div>
+              <div class="kb-item" onclick="getKey('7')">7</div>
+              <div class="kb-item" onclick="getKey('8')">8</div>
+              <div class="kb-item" onclick="getKey('9')">9</div>
+              <div class="kb-item" onclick="getKey('0')">0</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="getKey('@')">@</div>
+              <div class="kb-item" onclick="getKey('#')">#</div>
+              <div class="kb-item" onclick="getKey('$')">$</div>
+              <div class="kb-item" onclick="getKey('_')">_</div>
+              <div class="kb-item" onclick="getKey('&')">&</div>
+              <div class="kb-item" onclick="getKey('-')">-</div>
+              <div class="kb-item" onclick="getKey('+')">+</div>
+              <div class="kb-item" onclick="getKey('(')">(</div>
+              <div class="kb-item" onclick="getKey(')')">)</div>
+              <div class="kb-item" onclick="getKey('/')">/</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_shift()">=|~</div>
+              <div class="kb-item" onclick="getKey('*')">*</div>
+              <div class="kb-item" onclick='getKey(`"`)'>"</div>
+              <div class="kb-item" onclick="getKey(`'`)">'</div>
+              <div class="kb-item" onclick="getKey(':')">:</div>
+              <div class="kb-item" onclick="getKey(';')">;</div>
+              <div class="kb-item" onclick="getKey('!')">!</div>
+              <div class="kb-item" onclick="getKey('?')">?</div>
+              <div class="kb-item" onclick="getKey('Backspace')">⌫</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_alter()">ABC</div>
+              <div class="kb-item" onclick="getKey(',')">,</div>
+              <div class="kb-item" id="space-item" onclick="getKey(' ')"></div>
+              <div class="kb-item" onclick="getKey('.')">.</div>
+              <div class="kb-item" onclick="getKey('Enter')">↵</div>
+            </div>
+          </div>
+          <div id="virtual-keyboard-alter" class="keyboard hide">
+            <div class="row">
+              <div class="kb-item" onclick="getKey('~')">~</div>
+              <div class="kb-item" onclick="getKey('`')">`</div>
+              <div class="kb-item" onclick="getKey('|')">|</div>
+              <div class="kb-item" onclick="getKey('•')">•</div>
+              <div class="kb-item" onclick="getKey('√')">√</div>
+              <div class="kb-item" onclick="getKey('π')">π</div>
+              <div class="kb-item" onclick="getKey('÷')">÷</div>
+              <div class="kb-item" onclick="getKey('×')">×</div>
+              <div class="kb-item" onclick="getKey('¶')">¶</div>
+              <div class="kb-item" onclick="getKey('∆')">∆</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="getKey('£')">£</div>
+              <div class="kb-item" onclick="getKey('¢')">¢</div>
+              <div class="kb-item" onclick="getKey('€')">€</div>
+              <div class="kb-item" onclick="getKey('¥')">¥</div>
+              <div class="kb-item" onclick="getKey('^')">^</div>
+              <div class="kb-item" onclick="getKey('°')">°</div>
+              <div class="kb-item" onclick="getKey('=')">=</div>
+              <div class="kb-item" onclick="getKey('{')">{</div>
+              <div class="kb-item" onclick="getKey('}')">}</div>
+              <div class="kb-item" onclick="getKey('/')">/</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_shift()">?123</div>
+              <div class="kb-item" onclick="getKey('%')">%</div>
+              <div class="kb-item" onclick="getKey('©')">©</div>
+              <div class="kb-item" onclick="getKey('®')">®</div>
+              <div class="kb-item" onclick="getKey('™')">™</div>
+              <div class="kb-item" onclick="getKey('✓')">✓</div>
+              <div class="kb-item" onclick="getKey('[')">[</div>
+              <div class="kb-item" onclick="getKey(']')">]</div>
+              <div class="kb-item" onclick="getKey('Backspace')">⌫</div>
+            </div>
+            <div class="row">
+              <div class="kb-item" onclick="keyboard_alter()">ABC</div>
+              <div class="kb-item" onclick="getKey(',')">,</div>
+              <div class="kb-item" id="space-item" onclick="getKey(' ')"></div>
+              <div class="kb-item" onclick="getKey('.')">.</div>
+              <div class="kb-item" onclick="getKey('Enter')">↵</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="right-main-container"></div>
     </div>

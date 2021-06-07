@@ -1,9 +1,11 @@
 * {
   margin: 0;
   padding: 0;
+  /* font-family: "VT323", monospace; */
   font-family: "Courier New", Courier, monospace;
   --main: rgba(255, 255, 255, 1);
   --soft: rgba(255, 255, 255, 0.5);
+  /* font-size: 1.03em; */
 }
 
 .container {
@@ -19,8 +21,20 @@
 #right-main-container {
   width: 0%;
   height: 100%;
-  background-color: black;
+  background-color: rgba(20, 10, 20, 1);
   display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: 0.5s ease;
+}
+#left-main-container {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background-color: rgba(5, 0, 5, 1);
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
@@ -34,18 +48,20 @@
 #main-console-container {
   width: 100%;
   height: 100%;
-  background-color: black;
+  min-height: 70%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
+  z-index: 1;
 }
 
 #console-container {
   max-width: 80%;
   width: 100%;
   height: 80%;
-  background-color: black;
+  background-color: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,42 +72,85 @@
   width: 100%;
   height: 100%;
   border-radius: 5px;
-  background-color: black;
   position: relative;
 
   /* padding: 10px; */
   overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-x: hide;
+  transition: 0.5s ease;
+  padding-bottom: 2px;
 }
 #right-container {
   width: 100%;
 }
+
+#console-background {
+  pointer-events: none;
+  content: "";
+  max-width: 80%;
+  width: 100%;
+  height: 80%;
+  position: absolute;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(30, 0, 30, 0.7);
+  box-shadow: 0px 0px 50px rgba(50, 0, 50, 0.5);
+  transition: 0.5s ease;
+}
+
+#console-background.console-bg-off {
+  background-color: rgba(10, 0, 10, 0.7);
+  box-shadow: 0px 0px 20px rgba(50, 0, 50, 0);
+  transition: 0.5s ease;
+}
+/* CONSOLE FILTERS */
+
 #console-filter {
   pointer-events: none;
   content: "";
   max-width: 80%;
   width: 100%;
   height: 80%;
+  position: absolute;
+  padding: 10px;
+  border-radius: 10px;
+  transition: 1s ease;
+}
+.lines-filter {
   background: repeating-linear-gradient(
     rgb(0, 0, 0, 0.1),
     rgb(0, 0, 0, 0.1) 3px,
     rgb(255, 255, 255, 0.05) 3px,
     rgb(255, 255, 255, 0.05) 4px
   );
-  position: absolute;
-  padding: 10px;
-  border-radius: 10px;
-  /* border: 1px solid rgba(0, 255, 0, 0.1); */
   box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1),
     inset 0 0 15px rgba(255, 255, 255, 0.05),
     inset 0 0 25px rgba(255, 255, 255, 0.1);
+  transition: 1s ease;
+}
+.console-filter-off {
+  background: repeating-linear-gradient(
+    rgb(0, 0, 0, 0.3),
+    rgb(0, 0, 0, 0.3) 3px,
+    rgb(20, 20, 20, 0.5) 3px,
+    rgb(20, 20, 20, 0.5) 4px
+  );
+  box-shadow: inset 0 0 5px rgba(200, 200, 200, 0.1),
+    inset 0 0 15px rgba(200, 200, 200, 0.05),
+    inset 0 0 25px rgba(200, 200, 200, 0.1);
+  transition: 1s ease;
 }
 
 #console p {
   color: var(--main);
   white-space: pre-wrap;
   text-shadow: 0px 0px 6px rgba(255, 255, 255, 0.9);
-  transition: 0.2s;
+  transition: 1s ease;
+}
+.console-p-off {
+  opacity: 0;
+  filter: grayscale();
+  transition: 1s ease;
 }
 
 #console:focus {
@@ -113,31 +172,107 @@
   text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.9);
 }
 
+#virtual-keyboard-container {
+  width: 100%;
+  height: 50%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.keyboard {
+  /* background-color: rgba(20, 10, 20, 1); */
+  width: 40%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: repeat(10, auto);
+  grid-template-rows: repeat(4, auto);
+}
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.kb-item {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: rgba(255, 200, 255, 1);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px;
+  /* width: 80%; */
+  height: 80%;
+  flex-grow: 1;
+  transition: 0.2s ease;
+  text-shadow: 0px 0px 10px rgba(200, 0, 200, 1);
+}
+.kb-item:hover {
+  background-color: rgba(50, 0, 50, 0.7);
+  border: 1px solid rgba(200, 0, 200, 1);
+  transition: 1s ease;
+}
+.kb-item:active {
+  background-color: rgba(150, 50, 150, 0.7);
+  border: 1px solid rgba(200, 0, 200, 1);
+
+  color: black;
+  transition: 1s ease;
+}
+
+#space-item {
+  flex-grow: 5;
+  border: 1px solid rgba(200, 100, 200, 0.2);
+}
+
+.hide {
+  display: none !important;
+}
+
 /* CUSTOM SCROLL */
 /* width */
 ::-webkit-scrollbar {
   width: 4px;
+  height: 4px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background-color: rgba(0, 255, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
   border-radius: 2px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--soft);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--main);
+  background: rgba(255, 255, 255, 0.1);
 }
 
-@media only screen and (max-width: 600px) {
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0);
+}
+
+@media only screen and (max-width: 800px) {
   p {
-    font-size: 0.8em;
+    font-size: 1em;
+  }
+  .keyboard {
+    width: 100%;
+    padding: 5px;
   }
 }
